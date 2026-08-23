@@ -1,0 +1,10 @@
+{
+  "name": "ふたりのポケ図鑑",
+  "short_name": "ふたり図鑑",
+  "description": "ふたりで集める、思い出のポケモン図鑑",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffdf8",
+  "theme_color": "#ef4960",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
