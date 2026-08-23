@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#e83f52" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <title>ふたりのポケ図鑑</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <button class="icon-button menu" id="menuButton" aria-label="メニュー">☰</button>
+      <div class="brand"><span class="brand-ball"></span><span>ふたりの<br>ポケ図鑑</span></div>
+      <button class="avatar" id="accountButton" aria-label="共有アカウント">M</button>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">OUR SHARED COLLECTION</p>
+        <h1>まちで出会った<br><em>ポケモンたち</em></h1>
+        <p class="subline"><span class="online-dot"></span> <span id="memberNames">みお &amp; しゅう</span>で共有中</p>
+      </div>
+      <button class="round-add" id="openCapture" aria-label="写真を追加">＋</button>
+    </section>
+
+    <section class="stats" aria-label="図鑑の進み具合">
+      <div><strong id="seenCount">006</strong><span>みつけたかず</span></div>
+      <div class="progress-wrap"><div class="progress"><i id="progressBar"></i></div><span>ぜんこくずかん 0.6%</span></div>
+      <div><strong id="photoCount">004</strong><span>しゃしん</span></div>
+    </section>
+
+    <nav class="tabs" aria-label="表示切替">
+      <button class="active" data-tab="dex">ずかん</button>
+      <button data-tab="map">まっぷ</button>
+      <button data-tab="album">アルバム</button>
+    </nav>
+
+    <section id="dex" class="tab-panel active">
+      <div class="section-heading"><h2>ずかん</h2><div class="dex-switch"><button class="active" data-dex-view="all">ぜんぶ</button><button data-dex-view="caught">登録済み</button></div></div>
+      <div id="dexList" class="dex-list"></div>
+    </section>
+
+    <section id="map" class="tab-panel map-panel">
+      <div class="section-heading"><h2>出会った場所</h2><span class="map-note">タップで確認</span></div>
+      <div class="memory-map" id="memoryMap"><span class="map-road road-a"></span><span class="map-road road-b"></span><div id="mapPins"></div></div>
+      <div id="placeList" class="place-list"></div>
+    </section>
+    <section id="album" class="tab-panel album-panel"><div id="albumGrid" class="album-grid"></div></section>
+
+    <button class="capture-cta" id="captureCta"><span>◉</span> ポケモンを見つけた！</button>
+  </main>
+
+  <dialog id="captureDialog" class="capture-dialog">
+    <form class="capture-card" id="captureForm">
+      <button class="close" type="button" onclick="this.closest('dialog').close()" aria-label="閉じる">×</button>
+      <div class="capture-title"><span class="mini-ball"></span><div><p>NEW ENCOUNTER</p><h2>発見を記録する</h2></div></div>
+      <label class="photo-picker" id="dropzone">
+        <input id="photoInput" type="file" accept="image/*" capture="environment" />
+        <span id="photoPreview" class="picker-inner"><b>＋</b><strong>写真を撮る / 選ぶ</strong><small>ポケモンが写った一枚を追加</small></span>
+      </label>
+      <label class="note-label name-label">ポケモンのなまえ <input id="nameInput" maxlength="20" placeholder="例：ピカチュウ" autocomplete="off" list="pokemonSuggestions" /></label>
+      <datalist id="pokemonSuggestions"></datalist>
+      <div class="scan-status" id="nameStatus"><i></i><span>名前を入力すると図鑑へ自動で振り分けます</span></div>
+      <div class="result-card" id="resultCard" hidden>
+        <div class="tiny-sprite" id="resultSprite"></div><div><small>ずかんの登録先</small><strong id="resultName">フシギダネ</strong><span id="resultMeta">No.001 ・ たねポケモン</span></div>
+      </div>
+      <label class="note-label">ひとこと <input id="noteInput" maxlength="40" placeholder="例：駅前の花だんで発見！" /></label>
+      <div class="location-row"><button type="button" id="locateBtn">⌖ 今いる場所を記録</button><span id="locationState">場所はあとから編集できます</span></div>
+      <label class="note-label location-label">場所の名前 <input id="locationInput" maxlength="40" placeholder="例：代々木公園・池のそば" /></label>
+      <button class="save-button" id="saveBtn" type="button" disabled onclick="if(window.futariSaveEntry){window.futariSaveEntry()}else{alert('アプリを更新しています。いちど閉じて開き直してください。')}">ずかんに登録する</button>
+      <p class="notice">名前が既存のポケモンと一致すると、図鑑番号・ドット絵・タイプを補完します。</p>
+    </form>
+  </dialog>
+  <dialog id="accountDialog" class="account-dialog">
+    <form class="account-card">
+      <button class="close" type="button" onclick="this.closest('dialog').close()" aria-label="閉じる">×</button>
+      <p class="eyebrow">OUR SHARED ACCOUNT</p><h2>ふたりの図鑑アカウント</h2>
+      <p class="account-help" id="accountHelp">同じメールアドレスとパスワードでログインすると、二人の図鑑が一つになります。</p>
+      <label>メールアドレス<input id="emailInput" type="email" placeholder="zukan@example.com" /></label>
+      <label>パスワード<input id="passwordInput" type="password" minlength="6" placeholder="6文字以上" /></label>
+      <button type="button" class="save-button ready" id="loginButton">ログイン</button>
+      <button type="button" class="text-button" id="signupButton">はじめての人はこちら（アカウント作成）</button>
+      <button type="button" class="text-button" id="logoutButton" hidden>ログアウト</button>
+    </form>
+  </dialog>
+  <dialog id="menuDialog" class="account-dialog">
+    <form class="account-card menu-card">
+      <button class="close" type="button" onclick="this.closest('dialog').close()" aria-label="閉じる">×</button>
+      <p class="eyebrow">MENU</p><h2>メニュー</h2>
+      <button type="button" class="menu-link" id="menuDex">▣ ずかんを見る</button>
+      <button type="button" class="menu-link" id="menuMap">⌖ 出会った場所</button>
+      <button type="button" class="menu-link" id="menuAlbum">▧ 写真アルバム</button>
+      <p class="account-help">登録や共有アカウントは、右上の丸いボタンから開けます。</p>
+    </form>
+  </dialog>
+  <dialog id="entryDialog" class="account-dialog">
+    <form class="account-card entry-card" id="entryForm">
+      <button class="close" type="button" onclick="this.closest('dialog').close()" aria-label="閉じる">×</button>
+      <p class="eyebrow">POKÉDEX ENTRY</p><h2 id="entryTitle">図鑑のきろく</h2>
+      <div class="entry-hero"><img id="entrySprite" alt=""><div><small id="entryNo"></small><strong id="entryName"></strong><span id="entryKind"></span></div></div>
+      <div id="entryPhotos" class="entry-photos"></div>
+      <label class="edit-photo">写真を追加する <input id="editPhotoInput" type="file" accept="image/*" capture="environment"></label>
+      <label>ひとこと<input id="editNoteInput" maxlength="40" placeholder="思い出を入力"></label>
+      <label>場所の名前<input id="editPlaceInput" maxlength="40" placeholder="例：公園の花だん"></label>
+      <button type="submit" class="save-button ready">変更を保存する</button>
+      <button type="button" class="delete-button" id="deleteEntryButton">この記録を削除する</button>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <template id="dexItemTemplate">
+    <article class="dex-item">
+      <div class="sighting-visual"><div class="sprite-frame"><img class="entry-photo" alt="" loading="lazy"><span class="caught-mark">✓</span></div><div class="side-sprite normal-sprite" hidden><img alt="" loading="lazy"></div><div class="side-sprite shiny-sprite" hidden><img alt="" loading="lazy"></div></div>
+      <div class="dex-copy"><p class="dex-no"></p><h3></h3><span class="type-pill"></span><p class="encounter"></p></div>
+      <span class="chevron">›</span>
+    </article>
+  </template>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').then(registration => registration.update());
+      let reloadedForUpdate = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!reloadedForUpdate) { reloadedForUpdate = true; location.reload(); }
+      });
+    }
+  </script>
+</body>
+</html>
