@@ -27,7 +27,7 @@
       <div>
         <p class="eyebrow">OUR SHARED COLLECTION</p>
         <h1>まちで出会った<br><em>ポケモンたち</em></h1>
-        <p class="subline"><span class="online-dot"></span> <span id="memberNames">あいか &amp; しゅうさく</span>で共有中</p>
+        <p class="subline"><span class="online-dot"></span> <span id="memberNames"></span>で共有中</p>
       </div>
       <button class="round-add" id="openCapture" aria-label="写真を追加">＋</button>
     </section>
@@ -64,7 +64,7 @@
       <button class="close" type="button" onclick="this.closest('dialog').close()" aria-label="閉じる">×</button>
       <div class="capture-title"><span class="mini-ball"></span><div><p>NEW ENCOUNTER</p><h2>発見を記録する</h2></div></div>
       <label class="photo-picker" id="dropzone">
-        <input id="photoInput" type="file" accept="image/*" capture="environment" />
+        <input id="photoInput" type="file" accept="image/*" multiple />
         <span id="photoPreview" class="picker-inner"><b>＋</b><strong>写真を撮る / 選ぶ</strong><small>ポケモンが写った一枚を追加</small></span>
       </label>
       <label class="note-label name-label">ポケモンのなまえ <input id="nameInput" maxlength="20" placeholder="例：ピカチュウ" autocomplete="off" list="pokemonSuggestions" /></label>
@@ -99,6 +99,7 @@
       <button type="button" class="menu-link" id="menuDex">▣ ずかんを見る</button>
       <button type="button" class="menu-link" id="menuMap">⌖ 出会った場所</button>
       <button type="button" class="menu-link" id="menuAlbum">▧ 写真アルバム</button>
+      <button type="button" class="menu-link" id="menuRefresh">↻ 共有データを更新</button>
       <p class="account-help">登録や共有アカウントは、右上の丸いボタンから開けます。</p>
     </form>
   </dialog>
@@ -108,7 +109,7 @@
       <p class="eyebrow">POKÉDEX ENTRY</p><h2 id="entryTitle">図鑑のきろく</h2>
       <div class="entry-hero"><img id="entrySprite" alt=""><div><small id="entryNo"></small><strong id="entryName"></strong><span id="entryKind"></span></div></div>
       <div id="entryPhotos" class="entry-photos"></div>
-      <label class="edit-photo">写真を追加する <input id="editPhotoInput" type="file" accept="image/*" capture="environment"></label>
+      <label class="edit-photo">ライブラリから写真を追加 <input id="editPhotoInput" type="file" accept="image/*" multiple></label>
       <label>ひとこと<input id="editNoteInput" maxlength="40" placeholder="思い出を入力"></label>
       <label>場所の名前<input id="editPlaceInput" maxlength="40" placeholder="例：公園の花だん"></label>
       <button type="submit" class="save-button ready">変更を保存する</button>
