@@ -13,7 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?rev=28" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="style.css?rev=30" />
 </head>
 <body>
   <main class="app-shell">
@@ -51,7 +52,7 @@
 
     <section id="map" class="tab-panel map-panel">
       <div class="section-heading"><h2>出会った場所</h2><span class="map-note">タップで確認</span></div>
-      <div class="memory-map" id="memoryMap" aria-label="指で動かせる世界地図"><div class="world-map-surface" id="worldMapSurface"><div id="mapPins"></div></div></div>
+      <div class="memory-map" id="memoryMap" aria-label="指で動かせる世界地図"></div>
       <div id="placeList" class="place-list"></div>
     </section>
     <section id="album" class="tab-panel album-panel"><div id="albumGrid" class="album-grid"></div></section>
@@ -127,16 +128,13 @@
       <span class="chevron">›</span>
     </article>
   </template>
-  <script src="config.js?rev=28"></script>
-  <script src="app.js?rev=28"></script>
+  <script src="config.js?rev=30"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js?rev=30"></script>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?rev=28', { updateViaCache: 'none' }).then(registration => registration.update());
-      let reloadedForUpdate = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!reloadedForUpdate) { reloadedForUpdate = true; location.reload(); }
-      });
-    }
+    // 更新を確実にするため、以前のオフライン用キャッシュだけを一度解除する。
+    if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(list => Promise.all(list.map(registration => registration.unregister())));
+    if ('caches' in window) caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('futari-dex')).map(key => caches.delete(key))));
   </script>
 </body>
 </html>
