@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?rev=28" />
 </head>
 <body>
   <main class="app-shell">
@@ -51,7 +51,7 @@
 
     <section id="map" class="tab-panel map-panel">
       <div class="section-heading"><h2>出会った場所</h2><span class="map-note">タップで確認</span></div>
-      <div class="memory-map" id="memoryMap"><span class="map-road road-a"></span><span class="map-road road-b"></span><div id="mapPins"></div></div>
+      <div class="memory-map" id="memoryMap" aria-label="指で動かせる世界地図"><div class="world-map-surface" id="worldMapSurface"><div id="mapPins"></div></div></div>
       <div id="placeList" class="place-list"></div>
     </section>
     <section id="album" class="tab-panel album-panel"><div id="albumGrid" class="album-grid"></div></section>
@@ -73,6 +73,7 @@
       <div class="result-card" id="resultCard" hidden>
         <div class="tiny-sprite" id="resultSprite"></div><div><small>ずかんの登録先</small><strong id="resultName">フシギダネ</strong><span id="resultMeta">No.001 ・ たねポケモン</span></div>
       </div>
+      <label class="note-label">見つけた日 <input id="encounterDateInput" type="date" /></label>
       <label class="note-label">ひとこと <input id="noteInput" maxlength="40" placeholder="例：駅前の花だんで発見！" /></label>
       <div class="location-row"><button type="button" id="locateBtn">⌖ 今いる場所を記録</button><span id="locationState">場所はあとから編集できます</span></div>
       <label class="note-label location-label">場所の名前 <input id="locationInput" maxlength="40" placeholder="例：代々木公園・池のそば" /></label>
@@ -110,6 +111,7 @@
       <div class="entry-hero"><img id="entrySprite" alt=""><div><small id="entryNo"></small><strong id="entryName"></strong><span id="entryKind"></span></div></div>
       <div id="entryPhotos" class="entry-photos"></div>
       <label class="edit-photo">ライブラリから写真を追加 <input id="editPhotoInput" type="file" accept="image/*" multiple></label>
+      <label>見つけた日<input id="editDateInput" type="date"></label>
       <label>ひとこと<input id="editNoteInput" maxlength="40" placeholder="思い出を入力"></label>
       <label>場所の名前<input id="editPlaceInput" maxlength="40" placeholder="例：公園の花だん"></label>
       <button type="submit" class="save-button ready">変更を保存する</button>
@@ -125,11 +127,11 @@
       <span class="chevron">›</span>
     </article>
   </template>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?rev=28"></script>
+  <script src="app.js?rev=28"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').then(registration => registration.update());
+      navigator.serviceWorker.register('./sw.js?rev=28', { updateViaCache: 'none' }).then(registration => registration.update());
       let reloadedForUpdate = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!reloadedForUpdate) { reloadedForUpdate = true; location.reload(); }
